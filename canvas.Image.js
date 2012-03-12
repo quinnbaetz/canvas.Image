@@ -14,7 +14,10 @@ define("canvas.Image", function() {
         this.height = options.height;
         this.x = options.x;
         this.y = options.y;
-        
+        this.origX = options.x;
+        this.origY = options.y;
+        this.img = img;
+        this.scale = options.scale;
         //setters
         this.setWidth = function(width){
             options.width = width;
@@ -23,15 +26,15 @@ define("canvas.Image", function() {
         this.setHeight = function(height){
             options.height = height;
             this.height = height;
-        }
+        };
         this.setX = function(x){
             options.x = x;
             this.x = x;
-        }
+        };
         this.setY = function(y){
             options.y = y;
             this.y = y;
-        }
+        };
         this.setProps = function(attr, prop){
             if(typeof(attr) !== "object"){
                 options[attr] = prop;
@@ -42,7 +45,7 @@ define("canvas.Image", function() {
                     this[i] = attr[i];
                 }
             }
-        }
+        };
         //getters
         this.getWidth = function(){
             return this.width;
@@ -56,14 +59,31 @@ define("canvas.Image", function() {
         this.getY = function(){
             return this.Y;
         };
-        
+        this.getScaledWidth = function(){
+            return this.width*this.scale;
+        };
+        this.getScaledHeight = function(){
+            return this.height*this.scale;
+        }
         this.draw = function(opts){
             if(typeof(opts) === "undefined"){
                 opts = {};
             }
             opts.__proto__ = options
-            this.setProps({"width":this.width, "height":this.height, "x": this.x, "y": this.y});
-            opts.ctx.drawImage(img, opts.x, opts.y, opts.width, opts.height);
+            this.setProps({"width":this.width, "height":this.height, "x": this.x, "y": this.y, "scale": this.scale});
+            if(typeof(opts.alpha) === "number"){
+                opts.ctx.save();
+                ctx.globalAlpha = opts.alpha;
+            }
+            if(typeof(opts.scale) !== "undefined"){
+                opts.ctx.drawImage(img, 0, 0, opts.width, opts.height, opts.x, opts.y, opts.width*opts.scale, opts.height*opts.scale);
+            }else{
+                opts.ctx.drawImage(img, opts.x, opts.y, opts.width, opts.height);
+            }
+            if(typeof(opts.alpha) === "number"){
+                ctx.globalAlpha = 1;
+                opts.ctx.restore();
+            }
         };
     }
 });
