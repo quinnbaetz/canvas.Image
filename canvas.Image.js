@@ -76,7 +76,11 @@ define("canvas.Image", function() {
                 ctx.globalAlpha = opts.alpha;
             }
             if(typeof(opts.scale) !== "undefined"){
-                opts.ctx.drawImage(img, 0, 0, opts.width, opts.height, opts.x, opts.y, opts.width*opts.scale, opts.height*opts.scale);
+                try{
+                    opts.ctx.drawImage(img, 0, 0, opts.width, opts.height, opts.x, opts.y, opts.width*opts.scale, opts.height*opts.scale);
+                }catch(e){
+                    console.log(img, 0, 0, opts.width, opts.height, opts.x, opts.y, opts.width*opts.scale, opts.height*opts.scale);
+                }
             }else{
                 opts.ctx.drawImage(img, opts.x, opts.y, opts.width, opts.height);
             }
